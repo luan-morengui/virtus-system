@@ -1,5 +1,76 @@
 {% extends 'components/base.html' %}
 {% block title %}Index{% endblock title %}
 {% block body %}
-	<h1>Hello World!</h1>
+<div class="container my-4">
+    <h2 class="text-center mb-4">Colaboradores</h2>
+    <div id="presence-list" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for presenca in presencas %}
+        <div class="col text-center">
+            <!-- Foto -->
+            {% if presenca.user.info.foto_base64 %}
+            <img src="data:image/jpeg;base64,{{ presenca.user.info.foto_base64 }}" 
+                 alt="Foto de {{ presenca.user.get_full_name }}" 
+                 class="rounded-circle" 
+                 style="width: 150px; height: 150px; object-fit: cover; border: none;">
+            {% else %}
+            <img src="https://via.placeholder.com/150" 
+                 alt="Foto da pessoa" 
+                 class="rounded-circle" 
+                 style="width: 150px; height: 150px; object-fit: cover; border: none;">
+            {% endif %}
+            <!-- Nome -->
+            <h5 class="mt-2">{{ presenca.user.get_full_name }}</h5>
+            <!-- Cargo e Sala -->
+            <p class="text-muted">{{ presenca.user.info.cargo }} - {{ presenca.user.info.sala }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+</div>
+
+
 {% endblock body %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const presenceList = document.getElementById('presence-list');
+        const source = new EventSource("{% url 'employee_presence_stream' %}");
+    
+        source.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            if (data.action === 'entry') {
+                // Verifique se o elemento já existe
+                if (!document.getElementById(`user-${data.user.id}`)) {
+                    const userDiv = document.createElement('div');
+                    userDiv.classList.add('col', 'text-center');
+                    userDiv.id = `user-${data.user.id}`;
+                    userDiv.innerHTML = `
+                        <img src="${data.user.photo}" 
+                             alt="Foto de ${data.user.name}" 
+                             class="rounded-circle" 
+                             style="width: 150px; height: 150px; object-fit: cover; border: none;">
+                        <h5 class="mt-2">${data.user.name}</h5>
+                        <p class="text-muted">${data.user.role} - ${data.user.room}</p>
+                    `;
+                    presenceList.appendChild(userDiv);
+                }
+            } else if (data.action === 'exit') {
+                const userDiv = document.getElementById(`user-${data.user.id}`);
+                if (userDiv) {
+                    userDiv.remove();
+                }
+            }
+        };
+    
+        source.onerror = function () {
+            console.error("Erro na conexão com o servidor.");
+            source.close();
+        };
+    });
+    
+</script>
+
+
+
+{% endblock script %}
