@@ -1,8 +1,0 @@
-<div id="pessoa-{{ presenca.user.id }}" hx-swap-oob="true">
-    <img src="data:image/jpeg;base64,{{ presenca.user.info.foto_base64 }}" 
-         alt="Foto de {{ presenca.user.get_full_name }}" 
-         class="rounded-circle" 
-         style="width: 150px; height: 150px; object-fit: cover;">
-    <h5>{{ presenca.user.get_full_name }}</h5>
-    <p>{{ presenca.user.info.cargo }} - {{ presenca.user.info.sala }}</p>
-</div>

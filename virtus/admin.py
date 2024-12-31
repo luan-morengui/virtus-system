@@ -11,7 +11,7 @@ class UserInfoAdminForm(forms.ModelForm):
 
     class Meta:
         model = UserInfo
-        fields = ['user', 'cargo', 'sala','cartao_id', 'foto_base64']  # Campos existentes no modelo
+        fields = ['user','phone', 'cargo', 'sala','cartao_id', 'foto_base64']  # Campos existentes no modelo
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -27,7 +27,7 @@ class UserInfoAdminForm(forms.ModelForm):
 @admin.register(UserInfo)
 class UserInfoAdmin(admin.ModelAdmin):
     form = UserInfoAdminForm  # Usa o formulário personalizado
-    list_display = ('user', 'cargo', 'sala', 'cartao_id','foto_preview')
+    list_display = ('user', 'phone', 'cargo', 'sala', 'cartao_id','foto_preview')
     search_fields = ('user__username', 'user__first_name', 'user__last_name', 'cargo', 'sala')
     readonly_fields = ('foto_base64',)
 

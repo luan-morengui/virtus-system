@@ -4,5 +4,5 @@ from virtus import views
 
 urlpatterns = [
     path('', views.index, name='index'), 
-    path('stream/', views.employee_presence_stream, name='employee_presence_stream'),
+    path('atualizar-presencas', views.getPresencas, name='atualizar-presencas'), 
 ]

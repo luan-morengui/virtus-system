@@ -9,6 +9,7 @@ class UserInfo(models.Model):
     cargo = models.CharField(max_length=255, blank=True, null=True)  # Campo para o cargo da pessoa
     sala = models.CharField(max_length=50, blank=True, null=True)  # Campo para a sala da pessoa
     cartao_id = models.CharField(max_length=50, unique=True, blank=True, null=True)  # ID único do cartão NFC
+    phone = models.CharField(max_length=50, blank=True, null=True)  # Telefone
 
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.cargo} - {self.sala}"
